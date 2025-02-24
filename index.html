@@ -3,109 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Image Slider</title>
+    <title>Image Slider</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            height: 100vh; 
-            background-size: cover; 
-            background-position: center; 
-            transition: background 1s ease-in-out;
+        body { display: flex; justify-content: center; align-items: center; height: 100vh; background: #f4f4f4; }
+        .slider-container { position: relative; width: 80%; max-width: 600px; }
+        .slides { display: none; width: 100%; }
+        .prev, .next {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5); color: white;
+            border: none; padding: 10px; cursor: pointer;
         }
-        .slider-container { 
-            position: relative; 
-            width: 80%; 
-            max-width: 600px; 
-            overflow: hidden; 
-            border-radius: 10px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3); 
-        }
-        .slides { display: flex; transition: transform 0.5s ease-in-out; }
-        .slide { min-width: 100%; position: relative; }
-        img { width: 100%; display: block; }
-        .caption { 
-            position: absolute; 
-            bottom: 10px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            background: rgba(0,0,0,0.6); 
-            color: white; 
-            padding: 5px 10px; 
-            border-radius: 5px; 
-        }
-        .prev, .next { 
-            position: absolute; 
-            top: 50%; 
-            transform: translateY(-50%); 
-            background: rgba(0,0,0,0.5); 
-            color: white; 
-            border: none; 
-            padding: 10px; 
-            cursor: pointer; 
-        }
-        .prev { left: 10px; }
-        .next { right: 10px; }
-        .thumbnails { display: flex; justify-content: center; margin-top: 10px; }
-        .thumbnail { width: 50px; cursor: pointer; margin: 0 5px; opacity: 0.6; }
-        .thumbnail.active { opacity: 1; border: 2px solid #333; }
-        .controls { margin-top: 20px; }
-        .controls button { margin: 5px; padding: 10px; cursor: pointer; }
+        .prev { left: 0; }
+        .next { right: 0; }
     </style>
 </head>
 <body>
-    <div class="slider-container">
-        <div class="slides" id="slides">
-            <div class="slide"><img src="images/image1.jpg" alt="Mountain View"><div class="caption">Beautiful Mountain View</div></div>
-            <div class="slide"><img src="images/image2.jpg" alt="Sunset Beach"><div class="caption">Sunset Over the Ocean</div></div>
-            <div class="slide"><img src="images/image3.jpg" alt="City Skyline"><div class="caption">Modern City Skyline</div></div>
-        </div>
-        <button class="prev" onclick="prevSlide()">&#10094;</button>
-        <button class="next" onclick="nextSlide()">&#10095;</button>
-    </div>
-    <div class="thumbnails" id="thumbnails">
-        <img class="thumbnail" src="images/image1.jpg" onclick="showSlide(0)">
-        <img class="thumbnail" src="images/image2.jpg" onclick="showSlide(1)">
-        <img class="thumbnail" src="images/image3.jpg" onclick="showSlide(2)">
-    </div>
-    <div class="controls">
-        <button onclick="addImage()">Add Image</button>
-        <button onclick="removeImage()">Remove Last Image</button>
-    </div>
-    <script>
-        let index = 0;
-        const slidesContainer = document.getElementById('slides');
-        const thumbnailsContainer = document.getElementById('thumbnails');
-        const slides = document.querySelectorAll('.slide');
-        function showSlide(i) {
-            index = (i + slides.length) % slides.length;
-            slidesContainer.style.transform = `translateX(${-index * 100}%)`;
-            document.body.style.backgroundImage = `url(${slides[index].querySelector('img').src})`;
-        }
-        function prevSlide() { showSlide(index - 1); }
-        function nextSlide() { showSlide(index + 1); }
-        setInterval(nextSlide, 3000);
-        function addImage() {
-            const newImageIndex = slidesContainer.children.length + 1;
-            const newSlide = document.createElement('div');
-            newSlide.classList.add('slide');
-            newSlide.innerHTML = `<img src="images/image${newImageIndex}.jpg" alt="New Image ${newImageIndex}"><div class="caption">New Caption ${newImageIndex}</div>`;
-            slidesContainer.appendChild(newSlide);
-            const newThumbnail = document.createElement('img');
-            newThumbnail.classList.add('thumbnail');
-            newThumbnail.src = `images/image${newImageIndex}.jpg`;
-            newThumbnail.onclick = () => showSlide(newImageIndex - 1);
-            thumbnailsContainer.appendChild(newThumbnail);
-        }
-        function removeImage() {
-            if (slidesContainer.children.length > 1) {
-                slidesContainer.removeChild(slidesContainer.lastChild);
-                thumbnailsContainer.removeChild(thumbnailsContainer.lastChild);
-            }
-        }
-    </script>
+
+<div class="slider-container">
+    <img class="slides" src="image1.jpg" alt="Image 1">
+    <img class="slides" src="image2.jpg" alt="Image 2">
+    <img class="slides" src="image3.jpg" alt="Image 3">
+    
+    <button class="prev" onclick="changeSlide(-1)">❮</button>
+    <button class="next" onclick="changeSlide(1)">❯</button>
+</div>
+
+<script>
+    let index = 0;
+    function showSlide(n) {
+        let slides = document.querySelectorAll(".slides");
+        if (n >= slides.length) { index = 0; }
+        if (n < 0) { index = slides.length - 1; }
+        slides.forEach(slide => slide.style.display = "none");
+        slides[index].style.display = "block";
+    }
+    function changeSlide(n) {
+        index += n;
+        showSlide(index);
+    }
+    showSlide(index);
+</script>
+
 </body>
 </html>
